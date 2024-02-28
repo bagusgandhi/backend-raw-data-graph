@@ -74,10 +74,20 @@ export class RawDataService {
             const promises = this.csvPaths.length && this.csvPaths.map((file: string) => this.processRawData(file))
             await Promise.all(promises);
 
+            return { message: 'file has been uploaded and successfully process' }
+
         } catch (error) {
 
             unlinkSync(filePath);
-            throw new Error(error.message);
+
+            if (error.name === 'MongoBulkWriteError' && error.code === 11000) {
+                const failedInsertsCount = error.result.result.nInserted;
+                throw new BadRequestException(`Some data failed to insert. ${failedInsertsCount} documents were not inserted due to duplicated data.`);
+
+            } else {
+                throw new Error(error.message);
+            }
+
         }
     }
 
