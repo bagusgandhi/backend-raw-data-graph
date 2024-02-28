@@ -1,36 +1,29 @@
 version: '3'
 services:
-  raw-data-mongodb:
-    image: mongo:latest
-    restart: always
-    container_name: raw-data-mongodb
-    ports:
-      - "27018:27017"
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: # user
-      MONGO_INITDB_ROOT_PASSWORD: # password
-    networks:
-      - raw-data
-    volumes:
-      - mongodb_data:/data/db
+  # raw-data-mongodb:
+  #   image: mongo:latest
+  #   restart: always
+  #   container_name: raw-data-mongodb
+  #   ports:
+  #     - "27018:27017"
+  #   environment:
+  #     MONGO_INITDB_ROOT_USERNAME: # user
+  #     MONGO_INITDB_ROOT_PASSWORD: # password
+  #   networks:
+  #     - raw-data
+  #   volumes:
+  #     - mongodb_data:/data/db
 
 
   backend-raw-data:
     container_name: backend-raw-data
     build:
       context: .
-    restart: unless-stopped
-    depends_on:
-      - raw-data-mongodb
+    restart: always
     ports:
-      - 8001:8000
-    networks:
-      - raw-data
+      - 8779:8000
     env_file:
       - .env
 
-networks:
-  raw-data:
-
-volumes:
-  mongodb_data:
+# volumes:
+#   mongodb_data:
